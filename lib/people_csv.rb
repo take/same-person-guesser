@@ -1,20 +1,40 @@
+# frozen_string_literal: true
+
+# class for a csv content which includes personal information
+#
+# Example:
+#   PeopleCSV.new(CSV.read('./input.csv'))
+#
 class PeopleCSV < Array
-  MATCHING_TYPES = [:same_email, :same_phone, :same_email_or_phone]
+  MATCHING_TYPES = %i[same_email same_phone same_email_or_phone].freeze
 
   IDENTIFIERS = {
-    email: ["Email", "Email1", "Email2"],
-    phone: ["Phone", "Phone1", "Phone2"],
-  }
+    email: %w[Email Email1 Email2],
+    phone: %w[Phone Phone1 Phone2]
+  }.freeze
   private_constant :IDENTIFIERS
 
-  def group_by_matching_type(matching_type)
+  # Returns an Array which is grouped by the given matching type
+  # returned value can be used for CSV.open etc
+  #
+  # Example:
+  #   output = PeopleCSV
+  #            .new(CSV.read('./input.csv'))
+  #            .guess_by_matching_type(:same_email)
+  #   CSV.open('./output.csv', 'wb') do |ouput_csv|
+  #     output.each do |row|
+  #       output_csv << row
+  #     end
+  #   end
+  #
+  def guess_by_matching_type(matching_type)
     case matching_type
     when :same_email
-      group_by_indexes(email_identifier_indexes)
+      guess_by_indexes(email_identifier_indexes)
     when :same_phone
-      group_by_indexes(phone_identifier_indexes)
+      guess_by_indexes(phone_identifier_indexes)
     when :same_email_or_phone
-      group_by_indexes(email_identifier_indexes.concat(phone_identifier_indexes))
+      guess_by_indexes(email_identifier_indexes.concat(phone_identifier_indexes))
     else
       raise InvalidMatchingType
     end
@@ -27,14 +47,14 @@ class PeopleCSV < Array
   end
 
   def output_header_row
-    ["Grouped By"].concat(header_row)
+    ['Identifier'].concat(header_row)
   end
 
   def email_identifier_indexes
     res = []
 
     header_row.each_with_index do |header_column, i|
-      res = res.append(i) if IDENTIFIERS[:email].include?(header_column)
+      res.append(i) if IDENTIFIERS[:email].include?(header_column)
     end
 
     res
@@ -44,41 +64,48 @@ class PeopleCSV < Array
     res = []
 
     header_row.each_with_index do |header_column, i|
-      res = res.append(i) if IDENTIFIERS[:phone].include?(header_column)
+      res.append(i) if IDENTIFIERS[:phone].include?(header_column)
     end
 
     res
   end
 
-  # indexes - index for the row to group
-  def group_by_indexes(indexes)
+  # indexes - indexes in the row which will be used for guessing
+  def guess_by_indexes(indexes)
     res = [output_header_row]
-    groups = {}
+
+    groups = group_by_indexes(indexes)
+
+    groups.each do |identifier_value, rows|
+      rows.each do |row|
+        res.append([identifier_value].concat(row))
+      end
+    end
+
+    res
+  end
+
+  # TODO: Move this logic to a different class
+  def group_by_indexes(indexes) # rubocop:disable Metrics/MethodLength
+    res = {}
 
     indexes.each do |index|
-      self.each_with_index do |row, row_index|
-        next if row_index === 0
+      each_with_index do |row, row_index|
+        next if row_index.zero?
 
         value = row[index]
+        next if value.nil?
 
-        if groups[value].nil?
-          groups[value] = [row]
+        if res[value].nil?
+          res[value] = [row]
         else
-          groups[value].append(row)
+          res[value].append(row)
         end
       end
     end
 
-    groups.each do |identifier_value, rows|
-      next if identifier_value === nil
-
-      rows.each do |row|
-        res = res.append([identifier_value].concat(row))
-      end
-    end
-
     res
   end
 
-  class InvalidMatchingType < StandardError ; end
+  class InvalidMatchingType < StandardError; end
 end
