@@ -1,17 +1,22 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 require 'csv'
 require 'thor'
-require './lib/people_csv.rb'
+require './lib/people_csv'
 
+# class for CLI
 class SamePersonGuesser < Thor
   desc 'guess_by_matching_type',
-    'Guess identical people based on the provided matching type'
+       'Guess identical people based on the provided matching type'
   method_option :input_file_destination, required: true, type: :string
-  method_option :output_file_destination, type: :string,
-                desc: 'If this is not specified, a file ' +
-                      '"INPUT_FILE_guessed_by_MATCHING_TYPE.csv" will be created ' +
+  method_option :output_file_destination,
+                type: :string,
+                desc: 'If this is not specified, a file ' \
+                      '"INPUT_FILE_guessed_by_MATCHING_TYPE.csv" will be created ' \
                       'under the current directory'
-  method_option :matching_type, type: :string, default: 'same_email',
+  method_option :matching_type,
+                type: :string,
+                default: 'same_email',
                 desc: 'One of "same_email", "same_phone", "same_email_or_phone"'
   def guess_by_matching_type
     # validate args
