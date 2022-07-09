@@ -1,0 +1,11 @@
+Grouped By,FirstName,LastName,Phone1,Phone2,Email1,Email2,Zip
+(555) 123-4567,John,Doe,(555) 123-4567,(555) 987-6543,johnd@home.com,,94105
+(555) 123-4567,Jane,Doe,(555) 123-4567,(555) 654-9873,janed@home.com,johnd@home.com,94105
+(555) 123-4567,John,Doe,(555) 123-4567,(555) 987-6543,jackd@home.com,,94105
+(444) 123-4567,Jack,Doe,(444) 123-4567,(555) 654-9873,jackd@home.com,,94109
+(456) 789-0123,Josh,Doe,(456) 789-0123,,joshd@home.com,jackd@home.com,94109
+(654) 987-1234,Jill,Doe,(654) 987-1234,,jill@home.com,,94129
+(555) 987-6543,John,Doe,(555) 123-4567,(555) 987-6543,johnd@home.com,,94105
+(555) 987-6543,John,Doe,(555) 123-4567,(555) 987-6543,jackd@home.com,,94105
+(555) 654-9873,Jane,Doe,(555) 123-4567,(555) 654-9873,janed@home.com,johnd@home.com,94105
+(555) 654-9873,Jack,Doe,(444) 123-4567,(555) 654-9873,jackd@home.com,,94109
