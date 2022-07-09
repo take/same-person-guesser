@@ -7,7 +7,9 @@ class PeopleCSV < Array
   }
   private_constant :IDENTIFIERS
 
-  def group_by_matching_type(matching_type)
+  # Returns an Array which is grouped by the given matching type
+  # returned value can be used for CSV.open etc
+  def guess_by_matching_type(matching_type)
     case matching_type
     when :same_email
       group_by_indexes(email_identifier_indexes)
@@ -27,7 +29,7 @@ class PeopleCSV < Array
   end
 
   def output_header_row
-    ["Grouped By"].concat(header_row)
+    ["Guessed By"].concat(header_row)
   end
 
   def email_identifier_indexes
