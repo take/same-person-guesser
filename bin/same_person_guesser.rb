@@ -30,18 +30,11 @@ class SamePersonGuesser < Thor
       .guess_by_matching_type(options.matching_type.to_sym)
 
     # write to output file
-    filename_wo_extension = File.basename(options.input_file_destination, '.*')
-    output_file_destination =
-      if options.output_file_destination.nil?
-        "#{filename_wo_extension}_guessed_by_#{options.matching_type}.csv"
-      else
-        options.output_file_destination
-      end
-    CSV.open(output_file_destination, 'wb') do |output_csv_file|
-      output_csv.each do |row|
-        output_csv_file << row
-      end
-    end
+    write_output_file!(
+      options.input_file_destination,
+      options.output_file_destination,
+      output_csv
+    )
   end
 
   private
@@ -49,9 +42,29 @@ class SamePersonGuesser < Thor
   def validate_matching_type!(matching_type)
     matching_types = PeopleCSV::MATCHING_TYPES.map(&:to_s)
 
-    unless matching_types.include?(matching_type)
+    unless matching_types.include?(matching_type) # rubocop:disable Style/GuardClause
       raise "matching_type '#{matching_type}' is invalid. " \
             "should be one of #{matching_types.join(', ')}"
+    end
+  end
+
+  def write_output_file!(input_file_destination, output_file_destination, output_csv)
+    CSV.open(
+      output_file_destination(input_file_destination, output_file_destination),
+      'wb'
+    ) do |output_csv_file|
+      output_csv.each do |row|
+        output_csv_file << row
+      end
+    end
+  end
+
+  def output_file_destination(input_file_destination, output_file_destination)
+    filename_wo_extension = File.basename(input_file_destination, '.*')
+    if output_file_destination.nil?
+      "#{filename_wo_extension}_guessed_by_#{options.matching_type}.csv"
+    else
+      output_file_destination
     end
   end
 end

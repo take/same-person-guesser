@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+# class for a csv content which includes personal information
+#
+# Example:
+#   PeopleCSV.new(CSV.read('./input.csv'))
+#
 class PeopleCSV < Array
   MATCHING_TYPES = %i[same_email same_phone same_email_or_phone].freeze
 
@@ -11,14 +16,25 @@ class PeopleCSV < Array
 
   # Returns an Array which is grouped by the given matching type
   # returned value can be used for CSV.open etc
+  #
+  # Example:
+  #   output = PeopleCSV
+  #            .new(CSV.read('./input.csv'))
+  #            .guess_by_matching_type(:same_email)
+  #   CSV.open('./output.csv', 'wb') do |ouput_csv|
+  #     output.each do |row|
+  #       output_csv << row
+  #     end
+  #   end
+  #
   def guess_by_matching_type(matching_type)
     case matching_type
     when :same_email
-      group_by_indexes(email_identifier_indexes)
+      guess_by_indexes(email_identifier_indexes)
     when :same_phone
-      group_by_indexes(phone_identifier_indexes)
+      guess_by_indexes(phone_identifier_indexes)
     when :same_email_or_phone
-      group_by_indexes(email_identifier_indexes.concat(phone_identifier_indexes))
+      guess_by_indexes(email_identifier_indexes.concat(phone_identifier_indexes))
     else
       raise InvalidMatchingType
     end
@@ -31,7 +47,7 @@ class PeopleCSV < Array
   end
 
   def output_header_row
-    ['Guessed By'].concat(header_row)
+    ['Identifier'].concat(header_row)
   end
 
   def email_identifier_indexes
@@ -54,30 +70,37 @@ class PeopleCSV < Array
     res
   end
 
-  # indexes - index for the row to group
-  def group_by_indexes(indexes)
+  # indexes - indexes in the row which will be used for guessing
+  def guess_by_indexes(indexes)
     res = [output_header_row]
-    groups = {}
 
-    indexes.each do |index|
-      each_with_index do |row, row_index|
-        next if row_index === 0
+    groups = group_by_indexes(indexes)
 
-        value = row[index]
-
-        if groups[value].nil?
-          groups[value] = [row]
-        else
-          groups[value].append(row)
-        end
+    groups.each do |identifier_value, rows|
+      rows.each do |row|
+        res.append([identifier_value].concat(row))
       end
     end
 
-    groups.each do |identifier_value, rows|
-      next if identifier_value.nil?
+    res
+  end
 
-      rows.each do |row|
-        res.append([identifier_value].concat(row))
+  # TODO: Move this logic to a different class
+  def group_by_indexes(indexes) # rubocop:disable Metrics/MethodLength
+    res = {}
+
+    indexes.each do |index|
+      each_with_index do |row, row_index|
+        next if row_index.zero?
+
+        value = row[index]
+        next if value.nil?
+
+        if res[value].nil?
+          res[value] = [row]
+        else
+          res[value].append(row)
+        end
       end
     end
 
