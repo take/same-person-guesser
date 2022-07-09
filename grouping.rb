@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'csv'
-require './lib/people_csv.rb'
+require './lib/people_csv'
 
 input_files = [
   'examples/inputs/input1.csv',
   'examples/inputs/input2.csv',
-  'examples/inputs/input3.csv',
+  'examples/inputs/input3.csv'
 ]
 
 # csv           - value of CSV.read()
@@ -21,8 +23,8 @@ input_files.each do |input_file|
     grouped_csv = group(csv, matching_type)
 
     CSV.open(
-      "examples/outputs/#{filename_wo_extension}_grouped_by_#{matching_type.to_s}.csv",
-      "wb"
+      "examples/outputs/#{filename_wo_extension}_grouped_by_#{matching_type}.csv",
+      'wb'
     ) do |grouped_csv_file|
       grouped_csv.each do |row|
         grouped_csv_file << row

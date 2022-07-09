@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+
 require 'csv'
 require 'thor'
 require './lib/people_csv'
@@ -25,8 +26,8 @@ class SamePersonGuesser < Thor
     # logic which guesses identical people
     output_csv =
       PeopleCSV
-        .new(CSV.read(options.input_file_destination))
-        .guess_by_matching_type(options.matching_type.to_sym)
+      .new(CSV.read(options.input_file_destination))
+      .guess_by_matching_type(options.matching_type.to_sym)
 
     # write to output file
     filename_wo_extension = File.basename(options.input_file_destination, '.*')
@@ -36,7 +37,7 @@ class SamePersonGuesser < Thor
       else
         options.output_file_destination
       end
-    CSV.open(output_file_destination, "wb") do |output_csv_file|
+    CSV.open(output_file_destination, 'wb') do |output_csv_file|
       output_csv.each do |row|
         output_csv_file << row
       end
@@ -49,8 +50,8 @@ class SamePersonGuesser < Thor
     matching_types = PeopleCSV::MATCHING_TYPES.map(&:to_s)
 
     unless matching_types.include?(matching_type)
-      raise "matching_type '#{matching_type}' is invalid. " +
-        "should be one of #{matching_types.join(', ')}"
+      raise "matching_type '#{matching_type}' is invalid. " \
+            "should be one of #{matching_types.join(', ')}"
     end
   end
 end

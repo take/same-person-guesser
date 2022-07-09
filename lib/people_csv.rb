@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class PeopleCSV < Array
-  MATCHING_TYPES = [:same_email, :same_phone, :same_email_or_phone]
+  MATCHING_TYPES = %i[same_email same_phone same_email_or_phone].freeze
 
   IDENTIFIERS = {
-    email: ["Email", "Email1", "Email2"],
-    phone: ["Phone", "Phone1", "Phone2"],
-  }
+    email: %w[Email Email1 Email2],
+    phone: %w[Phone Phone1 Phone2]
+  }.freeze
   private_constant :IDENTIFIERS
 
   # Returns an Array which is grouped by the given matching type
@@ -29,14 +31,14 @@ class PeopleCSV < Array
   end
 
   def output_header_row
-    ["Guessed By"].concat(header_row)
+    ['Guessed By'].concat(header_row)
   end
 
   def email_identifier_indexes
     res = []
 
     header_row.each_with_index do |header_column, i|
-      res = res.append(i) if IDENTIFIERS[:email].include?(header_column)
+      res.append(i) if IDENTIFIERS[:email].include?(header_column)
     end
 
     res
@@ -46,7 +48,7 @@ class PeopleCSV < Array
     res = []
 
     header_row.each_with_index do |header_column, i|
-      res = res.append(i) if IDENTIFIERS[:phone].include?(header_column)
+      res.append(i) if IDENTIFIERS[:phone].include?(header_column)
     end
 
     res
@@ -58,7 +60,7 @@ class PeopleCSV < Array
     groups = {}
 
     indexes.each do |index|
-      self.each_with_index do |row, row_index|
+      each_with_index do |row, row_index|
         next if row_index === 0
 
         value = row[index]
@@ -72,15 +74,15 @@ class PeopleCSV < Array
     end
 
     groups.each do |identifier_value, rows|
-      next if identifier_value === nil
+      next if identifier_value.nil?
 
       rows.each do |row|
-        res = res.append([identifier_value].concat(row))
+        res.append([identifier_value].concat(row))
       end
     end
 
     res
   end
 
-  class InvalidMatchingType < StandardError ; end
+  class InvalidMatchingType < StandardError; end
 end
