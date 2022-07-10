@@ -21,7 +21,7 @@ class PeopleCSV < Array
   #   output = PeopleCSV
   #            .new(CSV.read('./input.csv'))
   #            .guess_by_matching_type(:same_email)
-  #   CSV.open('./output.csv', 'wb') do |ouput_csv|
+  #   CSV.open('./output.csv', 'wb') do |output_csv|
   #     output.each do |row|
   #       output_csv << row
   #     end

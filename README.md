@@ -33,3 +33,11 @@ $ ./bin/same_person_guesser.rb guess_by_matching_type \
     --matching_type 'same_phone' \
     --output-file-destination './examples/output.csv'
 ```
+
+## Development
+
+### Test
+
+```
+$ bundle exec rspec spec
+```
