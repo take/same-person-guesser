@@ -104,6 +104,11 @@ class PeopleCSV < Array
       end
     end
 
+    # delete groups that doesn't have more than 1 row
+    res.each do |identifier, rows|
+      res.delete(identifier) if rows.count < 2
+    end
+
     res
   end
 
