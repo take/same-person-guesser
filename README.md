@@ -1,5 +1,9 @@
 # Same person guesser
 
+A small program that guesses the same person based on the given data and
+matching type
+
+
 ## Setup
 
 ```
