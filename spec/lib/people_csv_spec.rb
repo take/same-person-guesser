@@ -20,7 +20,7 @@ RSpec.describe PeopleCSV do
         [
           %w[Identifier Name Email Phone],
           ['take@example.com', 'Take', 'take@example.com', '09011111111'],
-          ['take@example.com', 'Takehiro', 'take@example.com', '09022222222'],
+          ['take@example.com', 'Takehiro', 'take@example.com', '09022222222']
         ]
       end
 

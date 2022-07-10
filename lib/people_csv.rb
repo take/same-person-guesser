@@ -86,7 +86,7 @@ class PeopleCSV < Array
   end
 
   # TODO: Move this logic to a different class
-  def group_by_indexes(indexes) # rubocop:disable Metrics/MethodLength
+  def group_by_indexes(indexes) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     res = {}
 
     indexes.each do |index|
