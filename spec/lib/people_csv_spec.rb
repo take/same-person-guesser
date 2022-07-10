@@ -70,5 +70,31 @@ RSpec.describe PeopleCSV do
         ).to eq(expected_result)
       end
     end
+
+    context 'when input data has multiple identifiers' do
+      let(:test_data) do
+        [
+          %w[Name Email1 Email2],
+          ['Take', 'take@example.com', nil],
+          ['David', 'david@example.com', nil],
+          ['Takehiro', nil, 'take@example.com'],
+          ['Dave', nil, '09011111111']
+        ]
+      end
+      let(:matching_type) { :same_email }
+      let(:expected_result) {
+        [
+          %w[Identifier Name Email1 Email2],
+          ['take@example.com', 'Take', 'take@example.com', nil],
+          ['take@example.com', 'Takehiro', nil, 'take@example.com'],
+        ]
+      }
+
+      it 'works' do
+        expect(
+          described_class.new(test_data).guess_by_matching_type(matching_type)
+        ).to eq(expected_result)
+      end
+    end
   end
 end
