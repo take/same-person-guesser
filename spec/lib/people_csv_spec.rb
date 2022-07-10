@@ -82,13 +82,13 @@ RSpec.describe PeopleCSV do
         ]
       end
       let(:matching_type) { :same_email }
-      let(:expected_result) {
+      let(:expected_result) do
         [
           %w[Identifier Name Email1 Email2],
           ['take@example.com', 'Take', 'take@example.com', nil],
-          ['take@example.com', 'Takehiro', nil, 'take@example.com'],
+          ['take@example.com', 'Takehiro', nil, 'take@example.com']
         ]
-      }
+      end
 
       it 'works' do
         expect(
