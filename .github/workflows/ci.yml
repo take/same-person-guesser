@@ -1,18 +1,15 @@
-name: reviewdog
+name: ci
 
-on: [pull_request]
-permissions:
-  contents: read
-  pull-requests: write
+on: push
 
 jobs:
-  rubocop:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1.2' # same with .tool-versions's version
-      - uses: reviewdog/action-rubocop@v2.3.0
-        with:
-          rubocop_version: gemfile
+      - run: bundle install
+      - run: bundle exec rspec
+      - run: bundle exec rubocop
