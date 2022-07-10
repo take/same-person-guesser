@@ -45,3 +45,8 @@ $ ./bin/same_person_guesser.rb guess_by_matching_type \
 ```
 $ bundle exec rspec spec
 ```
+
+### TODOs
+
+- [ ] Add integration test for bin/same_person_guesser.rb
+- [ ] Add unit test for GroupedPeople#new
