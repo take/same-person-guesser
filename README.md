@@ -26,12 +26,12 @@ $ ./bin/same_person_guesser.rb help guess_by_matching_type
 $ ./bin/same_person_guesser.rb guess_by_matching_type \
     --input-file-destination './examples/inputs/input1.csv'
 
-# specifing matching type
+# specifying matching type
 $ ./bin/same_person_guesser.rb guess_by_matching_type \
     --input-file-destination './examples/inputs/input1.csv' \
     --matching-type 'same_phone'
 
-# specifing output file name and destination
+# specifying output file name and destination
 $ ./bin/same_person_guesser.rb guess_by_matching_type \
     --input-file-destination './examples/inputs/input1.csv' \
     --matching-type 'same_phone' \
