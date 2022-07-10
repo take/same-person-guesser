@@ -1,4 +1,4 @@
-Grouped By,FirstName,LastName,Phone,Email,Zip
+Identifier,FirstName,LastName,Phone,Email,Zip
 (555) 123-4567,John,Smith,(555) 123-4567,johns@home.com,94105
 (555) 123-4567,Jane,Smith,(555) 123-4567,janes@home.com,94105-1245
 444.123.4567,Jack,Smith,444.123.4567,jacks@home.com,94105
