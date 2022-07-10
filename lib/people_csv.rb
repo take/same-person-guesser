@@ -40,6 +40,8 @@ class PeopleCSV < Array
     end
   end
 
+  class InvalidMatchingType < StandardError; end
+
   private
 
   def header_row
@@ -146,6 +148,5 @@ class PeopleCSV < Array
       end
     end
   end
-
-  class InvalidMatchingType < StandardError; end
+  private_constant :GroupedPeople
 end
