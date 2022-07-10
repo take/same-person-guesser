@@ -124,16 +124,18 @@ class PeopleCSV < Array
       csv.each_with_index do |row, row_index|
         next if row_index.zero?
 
-        value = row[index]
-        next if value.nil? # skip if the value of identifier is nil
+        add!(identifier_value: row[index], person: row)
+      end
+    end
 
-        # add new if there are no existing data
-        if self[value].nil?
-          self[value] = [row]
-        # add to existing data
-        else
-          self[value].append(row)
-        end
+    def add!(identifier_value:, person:)
+      return if identifier_value.nil?
+
+      existing_group = self[identifier_value]
+      if existing_group.nil?
+        self[identifier_value] = [person]
+      else
+        existing_group.append(person)
       end
     end
 
