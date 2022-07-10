@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# class for a csv content which includes personal information
+# Public: Class for a csv content which includes personal information
 #
 # Example:
 #   PeopleCSV.new(CSV.read('./input.csv'))
@@ -14,8 +14,8 @@ class PeopleCSV < Array
   }.freeze
   private_constant :IDENTIFIERS
 
-  # Returns an Array which is grouped by the given matching type
-  # returned value can be used for CSV.open etc
+  # Returns an Array representing a CSV content which is grouped by the given
+  # matching type. Value can be used for CSV.open etc.
   #
   # Example:
   #   output = PeopleCSV
@@ -71,12 +71,15 @@ class PeopleCSV < Array
   end
 
   # indexes - indexes in the row which will be used for guessing
+  #
+  # Returns an Array representing a CSV content which is grouped by the given
+  # indexes for row
   def guess_by_indexes(indexes)
     res = [output_header_row]
 
-    groups = group_by_indexes(indexes)
+    grouped_people = GroupedPeople.new(csv: self, indexes:)
 
-    groups.each do |identifier_value, rows|
+    grouped_people.each do |identifier_value, rows|
       rows.each do |row|
         res.append([identifier_value].concat(row))
       end
@@ -85,31 +88,61 @@ class PeopleCSV < Array
     res
   end
 
-  # TODO: Move this logic to a different class
-  def group_by_indexes(indexes) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-    res = {}
+  # Private: Class for grouping people based on the given identifiers.
+  #          Key will be the value of identifier, and value will be an Array
+  #          object which contains the grouped people information.
+  #
+  # Example:
+  #   GroupedPeople.new(csv:, indexes:)
+  #   # => {
+  #          "take@example.com" => [
+  #            ["Take", "take@example.com", "09011111111"],
+  #            ["Takehiro", "take@example.com", "09022222222"]
+  #          ],
+  #          "09099999999" => [
+  #            ["Dave", "david@example.com", "09099999999"],
+  #            ["David", "dave@example.com", "09099999999"]
+  #          ]
+  #        }
+  #
+  class GroupedPeople < Hash
+    # csv - object of PeopleCSV
+    # indexes - indexes for the row in csv to group
+    def initialize(csv:, indexes:)
+      indexes.each do |index|
+        add_from_csv_by_index(csv:, index:)
+      end
 
-    indexes.each do |index|
-      each_with_index do |row, row_index|
+      delete_non_grouped_data!
+
+      super
+    end
+
+    private
+
+    def add_from_csv_by_index(csv:, index:)
+      csv.each_with_index do |row, row_index|
         next if row_index.zero?
 
         value = row[index]
-        next if value.nil?
+        next if value.nil? # skip if the value of identifier is nil
 
-        if res[value].nil?
-          res[value] = [row]
+        # add new if there are no existing data
+        if self[value].nil?
+          self[value] = [row]
+        # add to existing data
         else
-          res[value].append(row)
+          self[value].append(row)
         end
       end
     end
 
     # delete groups that doesn't have more than 1 row
-    res.each do |identifier, rows|
-      res.delete(identifier) if rows.count < 2
+    def delete_non_grouped_data!
+      each do |identifier, rows|
+        delete(identifier) if rows.count < 2
+      end
     end
-
-    res
   end
 
   class InvalidMatchingType < StandardError; end
