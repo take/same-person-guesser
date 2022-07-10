@@ -3,7 +3,7 @@
 
 require 'csv'
 require 'thor'
-require './lib/people_csv'
+require_relative '../lib/people_csv'
 
 # class for CLI
 class SamePersonGuesser < Thor
